@@ -55,18 +55,24 @@ public class SearchRoomWindow extends JFrame {
 		frmPersonsField.setBounds(347, 259, 227, 32);
 		getContentPane().add(frmPersonsField);
 		
-		UtilDateModel model = new UtilDateModel();
-		Properties p = new Properties();
-		p.put("text.today", "Today");
-		p.put("text.month", "Month");
-		p.put("text.year", "Year");
+		UtilDateModel modelFrom = new UtilDateModel();
+		Properties pFrom = new Properties();
+		pFrom.put("text.today", "Today");
+		pFrom.put("text.month", "Month");
+		pFrom.put("text.year", "Year");
 		
-		JDatePanelImpl datePanelFrom = new JDatePanelImpl(model, p);		
+		UtilDateModel modelTo = new UtilDateModel();
+		Properties pTo = new Properties();
+		pTo.put("text.today", "Today");
+		pTo.put("text.month", "Month");
+		pTo.put("text.year", "Year");
+		
+		JDatePanelImpl datePanelFrom = new JDatePanelImpl(modelFrom, pFrom);		
 		JDatePickerImpl datePickerFrom = new JDatePickerImpl(datePanelFrom, new DateLabelFormatter());
 		datePickerFrom.setSize(227, 32);
 		datePickerFrom.setLocation(347, 169);
 		 
-		JDatePanelImpl datePanelTo = new JDatePanelImpl(model, p);		
+		JDatePanelImpl datePanelTo = new JDatePanelImpl(modelTo, pTo);		
 		JDatePickerImpl datePickerTo = new JDatePickerImpl(datePanelTo, new DateLabelFormatter());
 		datePickerTo.setSize(227, 32);
 		datePickerTo.setLocation(347, 214);
@@ -95,21 +101,29 @@ public class SearchRoomWindow extends JFrame {
 					
 					if (from.compareTo(to) > 0) {
 						JOptionPane.showMessageDialog(null, "Date field 'From' must occur before date field 'To'.");
+						return;
 					}
 					
 					// Compare date parts of 'from' and today to check if 'from' comes after today (or from = today). 
 					// https://stackoverflow.com/questions/18402698/comparing-dates-in-java-only-years-months-and-days
 					Calendar calFrom = Calendar.getInstance();
 					Calendar calToday = Calendar.getInstance();
+					Date today = new Date();
+					System.out.println(from);
+					System.out.println(today);
 					calFrom.setTime(from);
-					calToday.setTime(new Date());
+					calToday.setTime(today);
 					boolean isFromValidDate = calFrom.get(Calendar.YEAR) == calToday.get(Calendar.YEAR) &&
-				              calFrom.get(Calendar.DAY_OF_YEAR) < calToday.get(Calendar.DAY_OF_YEAR);
+				              calFrom.get(Calendar.DAY_OF_YEAR) >= calToday.get(Calendar.DAY_OF_YEAR);
 					
-					if (isFromValidDate) {						
-						HotelApp.window.dispose();
-						HotelApp.window = new RoomsWindow(dim, RoomController.getRooms(from, to, persons));
+					if (!isFromValidDate) {						
+						JOptionPane.showMessageDialog(null, "Date field 'From' cannot be a past date.");
+						return;
 					}
+					
+					HotelApp.window.dispose();
+					HotelApp.window = new RoomsWindow(dim, RoomController.getRooms(from, to, persons));
+					
 				}
 				catch (NumberFormatException ex) {
 					JOptionPane.showMessageDialog(null, "Please provide a valid number of persons.");					
