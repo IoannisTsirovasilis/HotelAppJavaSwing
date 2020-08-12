@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import javax.swing.JTextField;
 
 import com.sarantos.kalampoukas.Controllers.UserController;
+import com.sarantos.kalampoukas.windows.LoginWindow;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

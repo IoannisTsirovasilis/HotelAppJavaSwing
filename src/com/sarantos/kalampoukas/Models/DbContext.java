@@ -97,8 +97,38 @@ public class DbContext {
 			rooms.add(room);
 		}
 		rooms.add(new Room(1, 2, 10.20, "desc", "image encoded", 1));
+		rooms.add(new Room(2, 5, 40.40, "desc2", "image encoded2", 1));
 		dispose();		
 		return rooms;
+	}
+	
+	public void bookRoom(int id) {
+		return;
+//		conn.setAutoCommit(false);
+//		String insertBookingSql = "INSERT INTO bookings (user_id, persons, total_price, check_in, check_out, status_id) VALUES "
+//				+ "(?, ?, ?, ?, ?, 1)"; 
+//		String updateRoomStatusSql = "UPDATE rooms SET status_id=0 WHERE id=?";
+//		stmt = conn.prepareStatement(insertBookingSql);
+//		
+//		stmt.executeQuery();
+//		
+//		// Get all available rooms
+//		ResultSet result = stmt.executeQuery();
+//		
+//		while (result.next()) {
+//			int id = result.getInt("id");
+//			capacity = result.getInt("capacity");
+//			double price = result.getDouble("price");
+//			String description = result.getString("description");
+//			String image_encoded = result.getString("image_encoded");
+//			int status_id = result.getInt("status_id");
+//			Room room = new Room(id, capacity, price, description, image_encoded, status_id);
+//			rooms.add(room);
+//		}
+//		rooms.add(new Room(1, 2, 10.20, "desc", "image encoded", 1));
+//		rooms.add(new Room(2, 5, 40.40, "desc2", "image encoded2", 1));
+//		dispose();		
+//		return false;
 	}
 	
 	private void connect() throws SQLException {

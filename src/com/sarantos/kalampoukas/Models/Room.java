@@ -41,4 +41,9 @@ public class Room implements IModel {
 	public int getStatusId() {
 		return status_id;
 	}
+	
+	@Override
+	public String toString() {
+		return description + " - " + capacity + " Persons";
+	}
 }

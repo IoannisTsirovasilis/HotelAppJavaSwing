@@ -1,4 +1,4 @@
-package com.sarantos.kalampoukas;
+package com.sarantos.kalampoukas.windows;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
@@ -7,7 +7,11 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import com.sarantos.kalampoukas.DateLabelFormatter;
+import com.sarantos.kalampoukas.HotelApp;
+import com.sarantos.kalampoukas.UserSession;
 import com.sarantos.kalampoukas.Controllers.RoomController;
+import com.sarantos.kalampoukas.Controllers.UserController;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -109,8 +113,6 @@ public class SearchRoomWindow extends JFrame {
 					Calendar calFrom = Calendar.getInstance();
 					Calendar calToday = Calendar.getInstance();
 					Date today = new Date();
-					System.out.println(from);
-					System.out.println(today);
 					calFrom.setTime(from);
 					calToday.setTime(today);
 					boolean isFromValidDate = calFrom.get(Calendar.YEAR) == calToday.get(Calendar.YEAR) &&
@@ -147,6 +149,7 @@ public class SearchRoomWindow extends JFrame {
 		logOffBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				UserController.logOff();
 				HotelApp.window.dispose();
 				HotelApp.window = new LoginWindow(dim);
 			}

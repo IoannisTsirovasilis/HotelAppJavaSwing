@@ -1,4 +1,4 @@
-package com.sarantos.kalampoukas;
+package com.sarantos.kalampoukas.windows;
 
 import java.awt.Button;
 import java.awt.Dimension;
@@ -11,6 +11,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import com.sarantos.kalampoukas.HotelApp;
+import com.sarantos.kalampoukas.UserSession;
+import com.sarantos.kalampoukas.Controllers.UserController;
+import com.sarantos.kalampoukas.Models.User;
 
 public class LoginWindow extends JFrame {
 	private JTextField frmLoginEmailField;
@@ -57,27 +62,25 @@ public class LoginWindow extends JFrame {
 		loginBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				// Disable login button to prevent multiple form submissions
-				loginBtn.setEnabled(false);
-				String email = frmLoginEmailField.getText();
-				String password = frmLoginPasswordField.getText();
-				if (false) { 
-					JOptionPane.showMessageDialog(null, "Wrong credentials");
+				try {
+					// Disable login button to prevent multiple form submissions
+					loginBtn.setEnabled(false);
+					String email = frmLoginEmailField.getText();
+					String password = frmLoginPasswordField.getText();
+					User user = UserController.login(email, password);
+					if (user != null) {
+						UserSession.getInstance(user.getId(), user.getEmail(), user.getName(), user.getSurname());
+						HotelApp.window.dispose();
+						HotelApp.window = new SearchRoomWindow(dim);
+					} else {
+						JOptionPane.showMessageDialog(null, "Wrong credentials");
+					}
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} finally {
 					loginBtn.setEnabled(true);
 				}
-				else {
-					HotelApp.window.dispose();
-					HotelApp.window = new SearchRoomWindow(dim);
-				}
-//				try {
-//					boolean succeeded = UserController.Login(email, password);
-//					if (succeeded) {
-//						
-//					}
-//				} catch (ClassNotFoundException | SQLException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
 			}
 		});
 		loginBtn.setBounds(350, 324, 91, 24);
