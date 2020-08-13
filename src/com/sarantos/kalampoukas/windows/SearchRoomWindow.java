@@ -1,5 +1,6 @@
 package com.sarantos.kalampoukas.windows;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 
@@ -84,7 +85,7 @@ public class SearchRoomWindow extends JFrame {
 		getContentPane().add(datePickerFrom);
 		getContentPane().add(datePickerTo);
 		
-		Button searchRoomBtn = new Button("Search");
+		JButton searchRoomBtn = new JButton("Search");
 		searchRoomBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) throws NumberFormatException {
@@ -145,7 +146,7 @@ public class SearchRoomWindow extends JFrame {
 		searchRoomBtn.setBounds(347, 308, 227, 24);
 		getContentPane().add(searchRoomBtn);
 		
-		Button logOffBtn = new Button("Log Off");
+		JButton logOffBtn = new JButton("Log Off");
 		logOffBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

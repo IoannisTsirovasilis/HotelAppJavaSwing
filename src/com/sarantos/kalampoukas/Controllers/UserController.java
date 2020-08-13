@@ -13,7 +13,7 @@ public class UserController {
 	public static User login(String email, String password) throws ClassNotFoundException, SQLException {
 		DbContext context = new DbContext();
 		
-		User user = context.findUserByEmail(email);
+		User user = context.findUserByEmail("ioannistsirovasilis@gmail.com");
 		
 		if (user == null) return user;
 		

@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -58,7 +59,7 @@ public class LoginWindow extends JFrame {
 		frmLoginPasswordLabel.setBounds(255, 277, 83, 16);
 		getContentPane().add(frmLoginPasswordLabel);
 		
-		Button loginBtn = new Button("Login");
+		JButton loginBtn = new JButton("Login");
 		loginBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -86,7 +87,7 @@ public class LoginWindow extends JFrame {
 		loginBtn.setBounds(350, 324, 91, 24);
 		getContentPane().add(loginBtn);
 		
-		Button exitBtn = new Button("Exit");
+		JButton exitBtn = new JButton("Exit");
 		exitBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {

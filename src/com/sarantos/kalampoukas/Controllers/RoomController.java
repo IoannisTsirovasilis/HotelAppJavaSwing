@@ -4,8 +4,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.JList;
-
 import com.sarantos.kalampoukas.UserSession;
 import com.sarantos.kalampoukas.Models.DbContext;
 import com.sarantos.kalampoukas.Models.Room;
@@ -23,8 +21,12 @@ public class RoomController {
 		return rooms;
 	}
 	
-	public static boolean book(int id) throws ClassNotFoundException {
+	public static boolean book(int id, int capacity, double total_price) throws ClassNotFoundException, SQLException {
 		DbContext context = new DbContext();
-		return false;
+		int user_id = UserSession.getInstance().getUserId();
+		int persons = UserSession.getInstance().getPersons();
+		Date check_in = UserSession.getInstance().getCheckIn();
+		Date check_out = UserSession.getInstance().getCheckOut();
+		return context.bookRoom(id, user_id, persons, total_price, check_in, check_out);
 	}
 }

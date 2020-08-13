@@ -95,40 +95,40 @@ public class DbContext {
 			int status_id = result.getInt("status_id");
 			Room room = new Room(id, capacity, price, description, image_encoded, status_id);
 			rooms.add(room);
-		}
-		rooms.add(new Room(1, 2, 10.20, "desc", "image encoded", 1));
-		rooms.add(new Room(2, 5, 40.40, "desc2", "image encoded2", 1));
+		} 
 		dispose();		
 		return rooms;
 	}
 	
-	public void bookRoom(int id) {
-		return;
-//		conn.setAutoCommit(false);
-//		String insertBookingSql = "INSERT INTO bookings (user_id, persons, total_price, check_in, check_out, status_id) VALUES "
-//				+ "(?, ?, ?, ?, ?, 1)"; 
-//		String updateRoomStatusSql = "UPDATE rooms SET status_id=0 WHERE id=?";
-//		stmt = conn.prepareStatement(insertBookingSql);
-//		
-//		stmt.executeQuery();
-//		
-//		// Get all available rooms
-//		ResultSet result = stmt.executeQuery();
-//		
-//		while (result.next()) {
-//			int id = result.getInt("id");
-//			capacity = result.getInt("capacity");
-//			double price = result.getDouble("price");
-//			String description = result.getString("description");
-//			String image_encoded = result.getString("image_encoded");
-//			int status_id = result.getInt("status_id");
-//			Room room = new Room(id, capacity, price, description, image_encoded, status_id);
-//			rooms.add(room);
-//		}
-//		rooms.add(new Room(1, 2, 10.20, "desc", "image encoded", 1));
-//		rooms.add(new Room(2, 5, 40.40, "desc2", "image encoded2", 1));
-//		dispose();		
-//		return false;
+	public boolean bookRoom(int id, int user_id, int persons, double total_price, Date check_in, Date check_out) throws SQLException {
+		try {
+			conn.setAutoCommit(false);
+			
+			// Insert and set the booking's status to pending
+			String insertBookingSql = "INSERT INTO bookings (room_id, user_id, persons, total_price, check_in, check_out, status_id) VALUES "
+					+ "(?, ?, ?, ?, ?, 1)"; 
+			
+			stmt = conn.prepareStatement(insertBookingSql);
+			stmt.setInt(1, id);
+			stmt.setInt(2, user_id);
+			stmt.setInt(3, persons);
+			stmt.setDouble(4, total_price);
+			stmt.setDate(5, (java.sql.Date) check_in);
+			stmt.setDate(6, (java.sql.Date) check_out);		
+			stmt.executeQuery();
+			
+			// Set the room's status to unavailable
+			String updateRoomStatusSql = "UPDATE rooms SET status_id=2 WHERE id=?";
+			stmt = conn.prepareStatement(updateRoomStatusSql);
+			stmt.setInt(1, id);
+			stmt.executeQuery();
+			conn.commit();
+			return true;
+		} catch (SQLException ex) {
+			return false;
+		} finally {
+			dispose();			
+		}		
 	}
 	
 	private void connect() throws SQLException {
