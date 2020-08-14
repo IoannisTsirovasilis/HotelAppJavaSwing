@@ -2,6 +2,7 @@ package com.sarantos.kalampoukas.windows;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JTextField;
 
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
@@ -9,6 +10,7 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import com.sarantos.kalampoukas.DateLabelFormatter;
 import com.sarantos.kalampoukas.HotelApp;
+import com.sarantos.kalampoukas.UserSession;
 import com.sarantos.kalampoukas.Controllers.RoomController;
 import com.sarantos.kalampoukas.Controllers.UserController;
 
@@ -29,7 +31,7 @@ import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JSpinner;
 
-public class SearchRoomWindow extends JFrame {
+public class SearchRoomWindow extends JFrame implements KeyListener {
 	JButton searchRoomBtn;
 	JDatePickerImpl datePickerFrom;
 	JDatePickerImpl datePickerTo;
@@ -44,7 +46,7 @@ public class SearchRoomWindow extends JFrame {
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
-		setTitle("Find Room - Hotel App");
+		setTitle("Search Room - Hotel App");
 		setFont(new Font("Tahoma", Font.PLAIN, 16));
 		getContentPane().setLayout(null);
 		
@@ -94,7 +96,24 @@ public class SearchRoomWindow extends JFrame {
 		pFrom.put("text.year", "Year");
 		
 		UtilDateModel modelTo = new UtilDateModel();
-		modelTo.setDate(today.getYear() + 1900, today.getMonth(), today.getDate());
+		
+		
+		// If the user can't find a choice of preference and hits the back button,
+		// render the previously selected dates
+		// else render today date
+		Date check_in = UserSession.getInstance().getCheckIn();
+		Date check_out = UserSession.getInstance().getCheckOut();
+		if (check_in != null) 
+			modelFrom.setDate(check_in.getYear() + 1900, check_in.getMonth(), check_in.getDate());
+		else
+			modelFrom.setDate(today.getYear() + 1900, today.getMonth(), today.getDate());
+		
+		if (check_out != null) 
+			modelTo.setDate(check_out.getYear() + 1900, check_out.getMonth(), check_out.getDate());
+		else
+			modelTo.setDate(today.getYear() + 1900, today.getMonth(), today.getDate());
+		
+		
 		modelTo.setSelected(true);
 		Properties pTo = new Properties();
 		pTo.put("text.today", "Today");
@@ -175,9 +194,9 @@ public class SearchRoomWindow extends JFrame {
 				JOptionPane.showMessageDialog(null, "Date field 'From' cannot be a past date.");
 				return;
 			}
-			
+			RoomController rc = new RoomController();
 			HotelApp.window.dispose();
-			HotelApp.window = new RoomsWindow(dim, RoomController.getRooms(from, to, persons));
+			HotelApp.window = new RoomsWindow(dim, rc.getRooms(from, to, persons));
 			
 		}
 		catch (NumberFormatException ex) {
@@ -191,6 +210,24 @@ public class SearchRoomWindow extends JFrame {
 		} finally {
 			searchRoomBtn.setEnabled(true);
 		}
+		
+	}
+	
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER)
+			searchRooms(dim);
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 }

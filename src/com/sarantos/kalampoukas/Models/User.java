@@ -1,6 +1,6 @@
 package com.sarantos.kalampoukas.Models;
 
-public class User implements IModel {
+public class User {
 	private int id;
 	private String name;
 	private String surname;

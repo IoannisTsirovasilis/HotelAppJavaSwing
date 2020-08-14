@@ -1,6 +1,6 @@
 package com.sarantos.kalampoukas.Models;
 
-public class RoomStatus implements IModel {
+public class RoomStatus {
 	private int id;
 	private String name;
 	

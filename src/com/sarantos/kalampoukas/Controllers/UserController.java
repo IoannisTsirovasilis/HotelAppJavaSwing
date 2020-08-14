@@ -10,10 +10,10 @@ public class UserController {
 	
 	public UserController() {}
 	
-	public static User login(String email, String password) throws ClassNotFoundException, SQLException {
+	public User login(String email, String password) throws ClassNotFoundException, SQLException {
 		DbContext context = new DbContext();
 		
-		User user = context.findUserByEmail("ioannistsirovasilis@gmail.com");
+		User user = context.findUserByEmail(email);
 		
 		if (user == null) return user;
 		
@@ -22,6 +22,5 @@ public class UserController {
 	
 	public static void logOff() {
 		UserSession.getInstance().cleanUserSession();
-	}
-	
+	}	
 }

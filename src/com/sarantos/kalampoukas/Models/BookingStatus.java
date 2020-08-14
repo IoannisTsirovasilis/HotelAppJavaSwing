@@ -1,6 +1,6 @@
 package com.sarantos.kalampoukas.Models;
 
-public class BookingStatus implements IModel {
+public class BookingStatus {
 	private int id;
 	private String name;
 	

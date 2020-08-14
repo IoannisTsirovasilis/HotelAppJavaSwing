@@ -98,7 +98,8 @@ public class LoginWindow extends JFrame implements KeyListener {
 			loginBtn.setEnabled(false);
 			String email = frmLoginEmailField.getText();
 			String password = frmLoginPasswordField.getText();
-			User user = UserController.login(email, password);
+			UserController uc = new UserController();
+			User user = uc.login(email, password);
 			if (user != null) {
 				UserSession.getInstance(user.getId(), user.getEmail(), user.getName(), user.getSurname());
 				HotelApp.window.dispose();

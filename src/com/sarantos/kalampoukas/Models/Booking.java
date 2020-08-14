@@ -2,7 +2,7 @@ package com.sarantos.kalampoukas.Models;
 
 import java.sql.Date;
 
-public class Booking implements IModel {
+public class Booking {
 	private int id;
 	private int user_id;
 	private int persons;

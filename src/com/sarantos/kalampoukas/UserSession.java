@@ -13,6 +13,7 @@ public final class UserSession {
     private String surname;
     
     // Booking info
+    private long bookingId;
     private Date check_in;
     private Date check_out;
     private int persons;
@@ -35,6 +36,14 @@ public final class UserSession {
     public static UserSession getInstance() {
     	return instance;
     }
+    
+    public void cleanUserSession() {
+    	instance = null;
+    }
+    
+    public long getBookingId() {
+    	return bookingId;
+    }
 
     public int getUserId() {
         return user_id;
@@ -50,14 +59,7 @@ public final class UserSession {
     
     public String getSurname() {
     	return surname;
-    }
-
-    public void cleanUserSession() {
-        user_id = 0;
-        email = "";
-        name = "";
-        surname = "";
-    }
+    }   
     
     public Date getCheckIn() {
     	return check_in;
@@ -80,6 +82,10 @@ public final class UserSession {
     	setCheckOut(check_out);
     	setPersons(persons);
     	setTotalPrice(total_price);
+    }
+    
+    public void setBookingId(long bookingId) {
+    	this.bookingId = bookingId;
     }
     
     public void setCheckIn(Date check_in) {

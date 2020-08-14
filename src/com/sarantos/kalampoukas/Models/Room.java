@@ -1,6 +1,6 @@
 package com.sarantos.kalampoukas.Models;
 
-public class Room implements IModel {
+public class Room {
 	private int id;
 	private int capacity;
 	private double price;

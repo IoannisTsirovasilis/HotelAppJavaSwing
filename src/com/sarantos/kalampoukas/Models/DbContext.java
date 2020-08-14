@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.mysql.jdbc.Statement;
+import com.sarantos.kalampoukas.UserSession;
+
 public class DbContext {
 	Connection conn = null;
 	PreparedStatement stmt = null;
@@ -59,12 +62,12 @@ public class DbContext {
 		List<Room> rooms = new ArrayList<Room>();
 		
 		// Get all bookings in given date range (sub-query)
-		String bookingsSql = "(SELECT DISTINCT room_id FROM bookings WHERE (check_in<? AND check_out>=? AND check_out <=?) OR "
+		String bookingsSql = "(SELECT DISTINCT room_id FROM bookings WHERE ((check_in<? AND check_out>=? AND check_out <=?) OR "
 				+ "(check_in>=? AND check_out<=?) OR"
 				+ "(check_in>=? AND check_in<=? AND check_out>?) OR"
-				+ "(check_in<? AND check_out>?) "
-				+ "AND capacity=?)";
-		String sql = "SELECT * FROM rooms WHERE status_id=1 AND id NOT IN " + bookingsSql;
+				+ "(check_in<? AND check_out>?)) "
+				+ "AND capacity=? AND status_id<>3)";
+		String sql = "SELECT * FROM rooms WHERE status_id=1 AND id NOT IN " + bookingsSql + " AND capacity=?";
 		stmt = conn.prepareStatement(sql);
 		
 		stmt.setDate(1, new java.sql.Date(from.getTime()));
@@ -82,6 +85,7 @@ public class DbContext {
 		stmt.setDate(10, new java.sql.Date(to.getTime()));
 		
 		stmt.setInt(11, capacity);
+		stmt.setInt(12, capacity);
 		
 		// Get all available rooms
 		ResultSet result = stmt.executeQuery();
@@ -100,32 +104,80 @@ public class DbContext {
 		return rooms;
 	}
 	
-	public boolean bookRoom(int id, int user_id, int persons, double total_price, Date check_in, Date check_out) throws SQLException {
+	public boolean payBooking(long id) throws SQLException {
 		try {
-			conn.setAutoCommit(false);
+			connect();
+			
+			// Update booking's status to to successful
+			String updateBookingSql = "UPDATE bookings SET status_id=? WHERE id=?";
+			
+			stmt = conn.prepareStatement(updateBookingSql);
+			stmt.setInt(1, 2);
+			stmt.setLong(2, id);		
+			stmt.executeUpdate();			
+			
+			return true;
+		} catch (SQLException ex) {
+			System.out.println(ex.toString());
+			return false;
+		} finally {
+			dispose();			
+		}		
+	}
+	
+	public boolean cancelBooking(long id) throws SQLException {
+		try {
+			connect();
+			
+			// Update booking's status to to successful
+			String updateBookingSql = "UPDATE bookings SET status_id=? WHERE id=?";
+			
+			stmt = conn.prepareStatement(updateBookingSql);
+			stmt.setInt(1, 3);
+			stmt.setLong(2, id);		
+			stmt.executeUpdate();			
+			
+			return true;
+		} catch (SQLException ex) {
+			System.out.println(ex.toString());
+			return false;
+		} finally {
+			dispose();			
+		}		
+	}
+	
+	public long bookRoom(int id, int user_id, int persons, double total_price, Date check_in, Date check_out) throws SQLException {
+		try {
+			connect();
 			
 			// Insert and set the booking's status to pending
 			String insertBookingSql = "INSERT INTO bookings (room_id, user_id, persons, total_price, check_in, check_out, status_id) VALUES "
-					+ "(?, ?, ?, ?, ?, 1)"; 
+					+ "(?, ?, ?, ?, ?, ?, 1)"; 
 			
-			stmt = conn.prepareStatement(insertBookingSql);
+			stmt = conn.prepareStatement(insertBookingSql, Statement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, id);
 			stmt.setInt(2, user_id);
 			stmt.setInt(3, persons);
 			stmt.setDouble(4, total_price);
-			stmt.setDate(5, (java.sql.Date) check_in);
-			stmt.setDate(6, (java.sql.Date) check_out);		
-			stmt.executeQuery();
-			
-			// Set the room's status to unavailable
-			String updateRoomStatusSql = "UPDATE rooms SET status_id=2 WHERE id=?";
-			stmt = conn.prepareStatement(updateRoomStatusSql);
-			stmt.setInt(1, id);
-			stmt.executeQuery();
-			conn.commit();
-			return true;
+			stmt.setDate(5, new java.sql.Date(check_in.getTime()));
+			stmt.setDate(6, new java.sql.Date(check_out.getTime()));		
+
+			int affectedRows = stmt.executeUpdate();
+	        if (affectedRows == 0) {
+	            return affectedRows;
+	        }
+
+	        ResultSet generatedKeys = stmt.getGeneratedKeys();
+	        
+	        long bookingId = 0;
+            if (generatedKeys.next()) {
+                bookingId = generatedKeys.getLong(1);
+            }	 
+            
+            return bookingId;
 		} catch (SQLException ex) {
-			return false;
+			System.out.println(ex.toString());
+			return 0;
 		} finally {
 			dispose();			
 		}		
@@ -136,9 +188,9 @@ public class DbContext {
 	}
 	
 	private void dispose() throws SQLException {
-		if (!stmt.isClosed())
+		if (stmt != null && !stmt.isClosed())
 			stmt.close();
-		if (!conn.isClosed())
+		if (conn != null && !conn.isClosed())
 			conn.close();
 	}
 }

@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -17,6 +19,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 import org.apache.commons.codec.binary.Base64;
@@ -24,9 +27,9 @@ import org.apache.commons.codec.binary.Base64;
 import com.sarantos.kalampoukas.HotelApp;
 import com.sarantos.kalampoukas.UserSession;
 import com.sarantos.kalampoukas.Controllers.RoomController;
-import com.sarantos.kalampoukas.windows.LoginWindow;
+import com.sarantos.kalampoukas.windows.PaymentWindow;
 import com.sarantos.kalampoukas.windows.SearchRoomWindow;
-
+	
 public class JTableRoom extends AbstractTableModel {
 	   private Object[][] rows;
 	   private static final String[] COLUMN_NAMES = new String[] {"Image", "Description", "Persons", "Book"};
@@ -47,35 +50,35 @@ public class JTableRoom extends AbstractTableModel {
 				   ((JLabel) rows[i][1]).setText(room.getDescription());
 				   
 				   rows[i][2] = new JLabel();
-				   String persons = Integer.toString(room.getCapacity()) + " Persons";
-				   ((JLabel) rows[i][2]).setText("Pe");
+				   ((JLabel) rows[i][2]).setText(Integer.toString(room.getCapacity()));
 				   
 				   
 				   long diffInMillies = Math.abs(UserSession.getInstance().getCheckOut().getTime() - UserSession.getInstance().getCheckIn().getTime());
 			       long rentDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS) + 1;
-			       rows[i][3] = new JButton("Book " + (room.getPrice() * rentDays));
+			       
+			       rows[i][3] = new JButton((room.getPrice() * rentDays) + " \u20ac");
 			       ((JButton) rows[i][3]).setFont(new Font("Tahoma", Font.PLAIN, 16));
-			       ((JButton) rows[i][3]).addMouseListener(new MouseAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) throws NumberFormatException {
-							
+			       ((JButton) rows[i][3]).addActionListener(new ActionListener() {
+			    	   
+						public void actionPerformed(ActionEvent event) {
+							JButton button = (JButton) event.getSource();
 							try {
-								((JButton) rows[i][3]).setEnabled(false);
-								boolean succeeded = RoomController.book(room.getId(), room.getCapacity(), room.getPrice() * rentDays);
+								button.setEnabled(false);
+								RoomController rc = new RoomController();
+								UserSession.getInstance().setTotalPrice(room.getPrice() * rentDays);
+								long bookingId = rc.book(room.getId(), room.getCapacity(), UserSession.getInstance().getTotalPrice());
 								Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-								if (succeeded) {
-									
+								if (bookingId > 0) {									
 									HotelApp.window.dispose();
-									HotelApp.window = new SearchRoomWindow(dim);
+									HotelApp.window = new PaymentWindow(dim, bookingId);
 								} else {
-									HotelApp.window.dispose();
-									HotelApp.window = new LoginWindow(dim);
+									JOptionPane.showMessageDialog(null, "Something went wrong, please try again later.");
 								}
 							} catch (ClassNotFoundException | SQLException e1) {
-								// TODO Auto-generated catch block
+								JOptionPane.showMessageDialog(null, "Exception: Something went wrong, please try again later.");
 								e1.printStackTrace();
 							} finally {
-								((JButton) rows[i][3]).setEnabled(true);
+								button.setEnabled(true);
 							}
 						}	        	
 					});
@@ -106,40 +109,7 @@ public class JTableRoom extends AbstractTableModel {
        
        @Override public Object getValueAt(final int rowIndex, final int columnIndex) {
            /*Adding components*/
-       switch (columnIndex) {
-           case 0: return rows[rowIndex][columnIndex];
-           case 1: return rows[rowIndex][columnIndex];
-           case 2: // fall through
-          /*Adding button and creating click listener*/
-           case 3: final JButton button = new JButton(COLUMN_NAMES[columnIndex]);
-                   button.addMouseListener(new MouseAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) throws NumberFormatException {
-							
-							try {
-								((JButton) rows[0][3]).setEnabled(false);
-								System.out.println(1);	
-								boolean succeeded = true;// RoomController.book(room.getId(), room.getCapacity(), room.getPrice() * rentDays);
-								Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-								if (succeeded) {
-									
-									HotelApp.window.dispose();
-									HotelApp.window = new SearchRoomWindow(dim);
-								} else {
-									HotelApp.window.dispose();
-									HotelApp.window = new LoginWindow(dim);
-								}
-							} catch (Exception e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							} finally {
-								((JButton) rows[0][3]).setEnabled(true);
-							}
-						}	        	
-					});
-                   return button;
-           default: return "Error";
-       }
+    	   return rows[rowIndex][columnIndex];
    }   
 
 }

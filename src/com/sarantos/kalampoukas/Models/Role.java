@@ -1,6 +1,6 @@
 package com.sarantos.kalampoukas.Models;
 
-public class Role implements IModel {
+public class Role {
 	private int id;
 	private String name;
 	
