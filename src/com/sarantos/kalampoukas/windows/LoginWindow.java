@@ -3,6 +3,8 @@ package com.sarantos.kalampoukas.windows;
 import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -18,10 +20,12 @@ import com.sarantos.kalampoukas.UserSession;
 import com.sarantos.kalampoukas.Controllers.UserController;
 import com.sarantos.kalampoukas.Models.User;
 
-public class LoginWindow extends JFrame {
+public class LoginWindow extends JFrame implements KeyListener {
 	private JTextField frmLoginEmailField;
 	private JLabel frmLoginPasswordLabel;
 	private JPasswordField frmLoginPasswordField;
+	private JButton loginBtn;
+	private Dimension dim;
 	
 	public LoginWindow(Dimension dim) {
 		initialize(dim);
@@ -31,12 +35,12 @@ public class LoginWindow extends JFrame {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize(Dimension dim) {
+		this.dim = dim;
 		setSize(900, 600);
 		setLocation(dim.width/2-getSize().width/2,
 				dim.height/2-getSize().height/2);					
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setVisible(true);
 		setFont(new Font("Tahoma", Font.PLAIN, 16));
 		getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 16));
 		setTitle("Login - Hotel App");
@@ -59,29 +63,11 @@ public class LoginWindow extends JFrame {
 		frmLoginPasswordLabel.setBounds(255, 277, 83, 16);
 		getContentPane().add(frmLoginPasswordLabel);
 		
-		JButton loginBtn = new JButton("Login");
+		loginBtn = new JButton("Login");
 		loginBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				try {
-					// Disable login button to prevent multiple form submissions
-					loginBtn.setEnabled(false);
-					String email = frmLoginEmailField.getText();
-					String password = frmLoginPasswordField.getText();
-					User user = UserController.login(email, password);
-					if (user != null) {
-						UserSession.getInstance(user.getId(), user.getEmail(), user.getName(), user.getSurname());
-						HotelApp.window.dispose();
-						HotelApp.window = new SearchRoomWindow(dim);
-					} else {
-						JOptionPane.showMessageDialog(null, "Wrong credentials");
-					}
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} finally {
-					loginBtn.setEnabled(true);
-				}
+				login(dim);
 			}
 		});
 		loginBtn.setBounds(350, 324, 91, 24);
@@ -101,5 +87,48 @@ public class LoginWindow extends JFrame {
 		frmLoginPasswordField.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		frmLoginPasswordField.setBounds(350, 269, 227, 32);
 		getContentPane().add(frmLoginPasswordField);
+		frmLoginEmailField.addKeyListener(this);
+		frmLoginPasswordField.addKeyListener(this);
+		setVisible(true);
+	}
+	
+	private void login(Dimension dim) {
+		try {
+			// Disable login button to prevent multiple form submissions
+			loginBtn.setEnabled(false);
+			String email = frmLoginEmailField.getText();
+			String password = frmLoginPasswordField.getText();
+			User user = UserController.login(email, password);
+			if (user != null) {
+				UserSession.getInstance(user.getId(), user.getEmail(), user.getName(), user.getSurname());
+				HotelApp.window.dispose();
+				HotelApp.window = new SearchRoomWindow(dim);
+			} else {
+				JOptionPane.showMessageDialog(null, "Wrong credentials");
+			}
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} finally {
+			loginBtn.setEnabled(true);
+		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER)
+			login(dim);
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -65,7 +65,12 @@ public class RoomsWindow extends JFrame {
 		
 		scrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
-		TableCellRenderer buttonRenderer = new JTableRoomRenderer();
+		table.setRowHeight(130);
+        TableCellRenderer labelRenderer = new JLabelRenderer();
+        table.getColumn("Image").setCellRenderer(labelRenderer);
+        table.getColumn("Description").setCellRenderer(labelRenderer);
+        table.getColumn("Persons").setCellRenderer(labelRenderer);
+        TableCellRenderer buttonRenderer = new JButtonRenderer();
         table.getColumn("Book").setCellRenderer(buttonRenderer);
 		add(scrollPane);
 		setVisible(true);

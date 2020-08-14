@@ -30,11 +30,10 @@ import com.sarantos.kalampoukas.windows.SearchRoomWindow;
 public class JTableRoom extends AbstractTableModel {
 	   private Object[][] rows;
 	   private static final String[] COLUMN_NAMES = new String[] {"Image", "Description", "Persons", "Book"};
-       private static final Class<?>[] COLUMN_TYPES = new Class<?>[] {JLabel.class, String.class, Integer.class,  JButton.class};
+       private static final Class<?>[] COLUMN_TYPES = new Class<?>[] {JLabel.class, JLabel.class, JLabel.class,  JButton.class};
        private int i = 0;
 	   
 	   public JTableRoom(List<Room> rooms) {
-		   System.out.println("JTableRoom constructor...");
 		   rows = new Object[rooms.size()][COLUMN_NAMES.length];
 		   for (Room room : rooms) {
 			   byte[] btDataFile = Base64.decodeBase64(room.getImageEncoded());
@@ -48,7 +47,8 @@ public class JTableRoom extends AbstractTableModel {
 				   ((JLabel) rows[i][1]).setText(room.getDescription());
 				   
 				   rows[i][2] = new JLabel();
-				   ((JLabel) rows[i][2]).setText(room.getCapacity() + " Persons");
+				   String persons = Integer.toString(room.getCapacity()) + " Persons";
+				   ((JLabel) rows[i][2]).setText("Pe");
 				   
 				   
 				   long diffInMillies = Math.abs(UserSession.getInstance().getCheckOut().getTime() - UserSession.getInstance().getCheckIn().getTime());
