@@ -27,8 +27,8 @@ import org.apache.commons.codec.binary.Base64;
 import com.sarantos.kalampoukas.HotelApp;
 import com.sarantos.kalampoukas.UserSession;
 import com.sarantos.kalampoukas.Controllers.RoomController;
-import com.sarantos.kalampoukas.windows.PaymentWindow;
-import com.sarantos.kalampoukas.windows.SearchRoomWindow;
+import com.sarantos.kalampoukas.Views.Payment;
+import com.sarantos.kalampoukas.Views.SearchRoom;
 	
 public class JTableRoom extends AbstractTableModel {
 	   private Object[][] rows;
@@ -70,13 +70,13 @@ public class JTableRoom extends AbstractTableModel {
 								Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 								if (bookingId > 0) {									
 									HotelApp.window.dispose();
-									HotelApp.window = new PaymentWindow(dim, bookingId);
+									HotelApp.window = new Payment(dim, bookingId);
 								} else {
 									JOptionPane.showMessageDialog(null, "Something went wrong, please try again later.");
 								}
-							} catch (ClassNotFoundException | SQLException e1) {
+							} catch (Exception e) {
 								JOptionPane.showMessageDialog(null, "Exception: Something went wrong, please try again later.");
-								e1.printStackTrace();
+								e.printStackTrace();
 							} finally {
 								button.setEnabled(true);
 							}

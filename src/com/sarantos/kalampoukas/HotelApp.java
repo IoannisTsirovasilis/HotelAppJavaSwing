@@ -9,7 +9,7 @@ import java.awt.Dimension;
 import javax.swing.JTextField;
 
 import com.sarantos.kalampoukas.Controllers.UserController;
-import com.sarantos.kalampoukas.windows.LoginWindow;
+import com.sarantos.kalampoukas.Views.Login;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -32,7 +32,7 @@ public class HotelApp {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					window = new LoginWindow(dim);
+					window = new Login(dim);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

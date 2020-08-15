@@ -7,6 +7,7 @@ public class Room {
 	private String description;
 	private String image_encoded;
 	private int status_id;
+	private RoomStatus status;
 	
 	public Room(int id, int capacity, double price, String description,
 			String image_encoded, int status_id) {
@@ -16,6 +17,17 @@ public class Room {
 		this.description = description;
 		this.image_encoded = image_encoded;
 		this.status_id = status_id;
+	}
+	
+	public Room(int id, int capacity, double price, String description,
+			String image_encoded, int status_id, RoomStatus status) {
+		this.id = id;
+		this.capacity = capacity;
+		this.price = price;
+		this.description = description;
+		this.image_encoded = image_encoded;
+		this.status_id = status_id;
+		this.status = status;
 	}
 	
 	public int getId() {
@@ -40,6 +52,10 @@ public class Room {
 	
 	public int getStatusId() {
 		return status_id;
+	}
+	
+	public RoomStatus getStatus() {
+		return status;
 	}
 	
 	@Override

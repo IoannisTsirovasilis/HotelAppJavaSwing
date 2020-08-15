@@ -1,4 +1,4 @@
-package com.sarantos.kalampoukas.windows;
+package com.sarantos.kalampoukas.Views;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,6 +13,7 @@ import com.sarantos.kalampoukas.HotelApp;
 import com.sarantos.kalampoukas.UserSession;
 import com.sarantos.kalampoukas.Controllers.RoomController;
 import com.sarantos.kalampoukas.Controllers.UserController;
+import com.sarantos.kalampoukas.Models.Room;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -29,16 +30,18 @@ import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
 import javax.swing.JSpinner;
 
-public class SearchRoomWindow extends JFrame implements KeyListener {
+public class SearchRoom extends JFrame implements KeyListener {
 	JButton searchRoomBtn;
 	JDatePickerImpl datePickerFrom;
 	JDatePickerImpl datePickerTo;
 	JSpinner frmPersonsField;
 	Dimension dim;
 	
-	public SearchRoomWindow(Dimension dim) {
+	public SearchRoom(Dimension dim) {
 		this.dim = dim;
 		setSize(900, 600);
 		setLocation(dim.width/2-getSize().width/2,
@@ -150,7 +153,7 @@ public class SearchRoomWindow extends JFrame implements KeyListener {
 			public void mouseClicked(MouseEvent e) {
 				UserController.logOff();
 				HotelApp.window.dispose();
-				HotelApp.window = new LoginWindow(dim);
+				HotelApp.window = new Login(dim);
 			}
 		});
 		logOffBtn.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -194,19 +197,20 @@ public class SearchRoomWindow extends JFrame implements KeyListener {
 				JOptionPane.showMessageDialog(null, "Date field 'From' cannot be a past date.");
 				return;
 			}
-			RoomController rc = new RoomController();
-			HotelApp.window.dispose();
-			HotelApp.window = new RoomsWindow(dim, rc.getRooms(from, to, persons));
+			
+			try {
+				RoomController rc = new RoomController();
+				List<Room> rooms = rc.getRooms(from, to, persons);
+				HotelApp.window.dispose();
+				HotelApp.window = new Rooms(dim, rooms);
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "Something went wrong, please try again.");
+				e.printStackTrace();
+			}
 			
 		}
 		catch (NumberFormatException ex) {
 			JOptionPane.showMessageDialog(null, "Please provide a valid number of persons.");					
-		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		} finally {
 			searchRoomBtn.setEnabled(true);
 		}

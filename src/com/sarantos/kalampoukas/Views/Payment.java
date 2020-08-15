@@ -1,4 +1,4 @@
-package com.sarantos.kalampoukas.windows;
+package com.sarantos.kalampoukas.Views;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -15,14 +16,17 @@ import javax.swing.JTextField;
 
 import com.sarantos.kalampoukas.HotelApp;
 import com.sarantos.kalampoukas.UserSession;
+import com.sarantos.kalampoukas.Controllers.BookingController;
 import com.sarantos.kalampoukas.Controllers.PaymentController;
+import com.sarantos.kalampoukas.Controllers.UserController;
+import com.sarantos.kalampoukas.Models.Booking;
 
 import javax.swing.JButton;
 
-public class PaymentWindow extends JFrame {
+public class Payment extends JFrame {
 	Dimension dim;
 	
-	public PaymentWindow(Dimension dim, long bookingId) {
+	public Payment(Dimension dim, long bookingId) {
 		this.dim = dim;
 		setSize(900, 600);
 		setLocation(dim.width/2-getSize().width/2,
@@ -91,7 +95,22 @@ public class PaymentWindow extends JFrame {
 					pc.payBooking(bookingId);
 					JOptionPane.showMessageDialog(null, "Successful payment!");
 					HotelApp.window.dispose();
-					HotelApp.window = new SearchRoomWindow(dim);
+					if (UserSession.getInstance().getRoleId() == 1) {
+						
+						try {
+							BookingController bc = new BookingController();
+							List<Booking> bookings;
+							bookings = bc.getBookings();
+							HotelApp.window = new Bookings(dim, bookings); 
+						} catch (Exception e1) {
+							JOptionPane.showMessageDialog(null, "Payment was successful, but something went wrong afterwards. Please relogin");
+							UserController.logOff();
+							HotelApp.window = new Login(dim); 
+						}						
+					}
+					else {
+						HotelApp.window = new SearchRoom(dim);
+					}						
 				} catch (ClassNotFoundException | SQLException e1) {
 					JOptionPane.showMessageDialog(null, "Something went wrong, please try again.");
 					e1.printStackTrace();
@@ -115,7 +134,8 @@ public class PaymentWindow extends JFrame {
 				} finally {
 					JOptionPane.showMessageDialog(null, "You have cancelled your booking.");
 					HotelApp.window.dispose();
-					HotelApp.window = new SearchRoomWindow(dim);
+					if (UserSession.getInstance().getRoleId() == 1) HotelApp.window = new NewBooking(dim); 
+					else HotelApp.window = new SearchRoom(dim);
 				}
 			}
 		});

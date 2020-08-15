@@ -25,27 +25,12 @@ public class DbContext {
 		Class.forName(JDBC_DRIVER);
 	}
 	
-	public User findUserById(int id) throws SQLException {
+	public User findUserByEmailAndRole(String email, String role) throws SQLException {
 		connect();
-		String sql = "SELECT * FROM Users WHERE id=?";
-		stmt = conn.prepareStatement(sql);
-		stmt.setInt(1, id);
-		ResultSet result = stmt.executeQuery();
-		dispose();		
-		if (result.next()) {
-			return new User(result.getInt("id"), result.getString("name"),
-					result.getString("surname"), result.getString("email"), result.getString("mobile"),
-					result.getInt("role_id"), result.getString("password_hash"));
-		}
-		dispose();	
-		return null;
-	}
-	
-	public User findUserByEmail(String email) throws SQLException {
-		connect();
-		String sql = "SELECT * FROM Users WHERE email=?";
+		String sql = "SELECT * FROM users JOIN roles ON users.role_id=roles.id WHERE users.email=? AND roles.name=?";
 		stmt = conn.prepareStatement(sql);
 		stmt.setString(1, email);
+		stmt.setString(2, role);
 		ResultSet result = stmt.executeQuery();
 			
 		if (result.next()) {
@@ -55,6 +40,73 @@ public class DbContext {
 		}
 		dispose();	
 		return null;
+	}
+	
+	public List<Booking> getBookings() throws SQLException {
+		connect();
+		
+		List<Booking> bookings = new ArrayList<Booking>();
+		
+		String sql = "SELECT bookings.*, users.email AS email FROM bookings JOIN users ON bookings.user_id=users.id ORDER BY bookings.check_in DESC";
+		
+		stmt = conn.prepareStatement(sql);
+		
+		ResultSet result = stmt.executeQuery();
+		
+		while (result.next()) {
+			int id = result.getInt("id");
+			int user_id = result.getInt("user_id");
+			int persons = result.getInt("persons");
+			double total_price = result.getDouble("total_price");
+			Date check_in = result.getDate("check_in");
+			Date check_out = result.getDate("check_out");
+			int status_id = result.getInt("status_id");
+			int room_id = result.getInt("room_id");
+			String email = result.getString("email");
+			Booking booking = new Booking(id, user_id, persons, total_price, check_in, check_out, status_id, room_id, email);
+			bookings.add(booking);
+		} 
+		dispose();		
+		return bookings;
+	}
+	
+	public boolean setRoomPrice(int id, double price) throws SQLException {		
+		try {
+			connect();			
+			String sql = "UPDATE rooms SET price=? WHERE id=?";			
+			stmt = conn.prepareStatement(sql);
+			stmt.setDouble(1, price);
+			stmt.setInt(2, id);			
+			stmt.executeUpdate();
+			
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			dispose();
+		}
+	}
+	
+	public List<Role> getRoles() throws SQLException {
+		connect();
+		
+		List<Role> roles = new ArrayList<Role>();
+		
+		String sql = "SELECT * FROM roles";
+		
+		stmt = conn.prepareStatement(sql);
+		
+		ResultSet result = stmt.executeQuery();
+		
+		while (result.next()) {
+			int id = result.getInt("id");
+			String name = result.getString("name");
+			Role role = new Role(id, name);
+			roles.add(role);
+		} 
+		dispose();		
+		return roles;
 	}
 	
 	public List<Room> getRoomsInDateRangeAndCapacity(Date from, Date to, int capacity) throws SQLException {
@@ -125,6 +177,42 @@ public class DbContext {
 		}		
 	}
 	
+	public boolean activateRoom(int id) throws SQLException {
+		try {
+			connect();
+			
+			String sql = "UPDATE rooms SET status_id=1 WHERE id=?";
+			
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, id);		
+			stmt.executeUpdate();			
+			return true;
+		} catch (SQLException ex) {
+			System.out.println(ex.toString());
+			return false;
+		} finally {
+			dispose();			
+		}	
+	}
+	
+	public boolean deactivateRoom(int id) throws SQLException {
+		try {
+			connect();
+			
+			String sql = "UPDATE rooms SET status_id=2 WHERE id=?";
+			
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, id);		
+			stmt.executeUpdate();			
+			return true;
+		} catch (SQLException ex) {
+			System.out.println(ex.toString());
+			return false;
+		} finally {
+			dispose();			
+		}	
+	}
+	
 	public boolean cancelBooking(long id) throws SQLException {
 		try {
 			connect();
@@ -192,5 +280,38 @@ public class DbContext {
 			stmt.close();
 		if (conn != null && !conn.isClosed())
 			conn.close();
+	}
+
+	public List<Room> getRooms() throws SQLException {
+		try {
+			connect();
+			List<Room> rooms = new ArrayList<Room>();
+			
+			String sql = "SELECT rooms.*, room_statuses.name as status FROM rooms JOIN room_statuses ON rooms.status_id=room_statuses.id ORDER BY rooms.id";
+			stmt = conn.prepareStatement(sql);
+			// Get all available rooms
+			ResultSet result;
+			result = stmt.executeQuery();
+			while (result.next()) {
+				int id = result.getInt("id");
+				int capacity = result.getInt("capacity");
+				double price = result.getDouble("price");
+				String description = result.getString("description");
+				String image_encoded = result.getString("image_encoded");
+				int status_id = result.getInt("status_id");
+				String status_name = result.getString("status");
+				Room room = new Room(id, capacity, price, description, image_encoded, status_id, new RoomStatus(status_id, status_name));
+				rooms.add(room);
+			} 
+			
+			return rooms;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			dispose();
+		}		
+			
+		
 	}
 }

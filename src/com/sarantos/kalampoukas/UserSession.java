@@ -11,6 +11,7 @@ public final class UserSession {
     private String email;
     private String name;
     private String surname;
+    private int role_id;
     
     // Booking info
     private long bookingId;
@@ -19,16 +20,17 @@ public final class UserSession {
     private int persons;
     private double total_price;
 
-    private UserSession(int user_id, String email, String name, String surname) {
+    private UserSession(int user_id, String email, String name, String surname, int role_id) {
         this.user_id = user_id;
         this.email = email;
         this.name = name;
         this.surname = surname;
+        this.role_id = role_id;
     }
 
-    public static UserSession getInstance(int user_id, String email, String name, String surname) {
+    public static UserSession getInstance(int user_id, String email, String name, String surname, int role_id) {
         if(instance == null) {
-            instance = new UserSession(user_id, email, name, surname);
+            instance = new UserSession(user_id, email, name, surname, role_id);
         }
         return instance;
     }
@@ -73,8 +75,16 @@ public final class UserSession {
     	return persons;
     }
     
+    public int getRoleId() {
+    	return role_id;
+    }
+    
     public double getTotalPrice() {
     	return total_price;
+    }
+    
+    public void setUserId(int user_id) {
+        this.user_id = user_id;
     }
     
     public void setBookingInfo(Date check_in, Date check_out, int persons, double total_price) {
