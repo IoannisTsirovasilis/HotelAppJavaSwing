@@ -20,6 +20,16 @@ public class User {
 		this.password_hash = password_hash;
 	}
 	
+	public User(String name, String surname, String email,
+			String mobile, int role_id, String password_hash) {
+		this.name = name;
+		this.surname = surname;
+		this.email = email;
+		this.mobile = mobile;
+		this.role_id = role_id;
+		this.password_hash = password_hash;
+	}
+	
 	public int getId() {
 		return id;
 	}

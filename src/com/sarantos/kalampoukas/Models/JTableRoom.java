@@ -26,7 +26,9 @@ import org.apache.commons.codec.binary.Base64;
 
 import com.sarantos.kalampoukas.HotelApp;
 import com.sarantos.kalampoukas.UserSession;
+import com.sarantos.kalampoukas.Controllers.BookingController;
 import com.sarantos.kalampoukas.Controllers.RoomController;
+import com.sarantos.kalampoukas.Views.Bookings;
 import com.sarantos.kalampoukas.Views.Payment;
 import com.sarantos.kalampoukas.Views.SearchRoom;
 	
@@ -62,17 +64,38 @@ public class JTableRoom extends AbstractTableModel {
 			    	   
 						public void actionPerformed(ActionEvent event) {
 							JButton button = (JButton) event.getSource();
+							long bookingId = 0;
+							Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+							RoomController rc = new RoomController();
+							UserSession.getInstance().setTotalPrice(room.getPrice() * rentDays);
 							try {
 								button.setEnabled(false);
-								RoomController rc = new RoomController();
-								UserSession.getInstance().setTotalPrice(room.getPrice() * rentDays);
-								long bookingId = rc.book(room.getId(), room.getCapacity(), UserSession.getInstance().getTotalPrice());
-								Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-								if (bookingId > 0) {									
-									HotelApp.window.dispose();
-									HotelApp.window = new Payment(dim, bookingId);
+								
+								if (UserSession.getInstance().getRoleId() == 1) {
+									int dialogResult = JOptionPane.showConfirmDialog(null, "The booking is going to be "
+											+ "paid as soon as the customer arrives. Continue?");
+									if(dialogResult == JOptionPane.YES_OPTION) {
+										
+										bookingId = rc.book(room.getId(), room.getCapacity(), UserSession.getInstance().getTotalPrice());
+										
+										if (bookingId > 0) {				
+											JOptionPane.showMessageDialog(null, "Successful booking!");
+											BookingController bc = new BookingController();
+											HotelApp.window.dispose();
+											HotelApp.window = new Bookings(dim, bc.getBookings());
+										} else {
+											JOptionPane.showMessageDialog(null, "Something went wrong, please try again later.");
+										}
+									}
 								} else {
-									JOptionPane.showMessageDialog(null, "Something went wrong, please try again later.");
+									bookingId = rc.book(room.getId(), room.getCapacity(), UserSession.getInstance().getTotalPrice());
+									dim = Toolkit.getDefaultToolkit().getScreenSize();
+									if (bookingId > 0) {									
+										HotelApp.window.dispose();
+										HotelApp.window = new Payment(dim, bookingId);
+									} else {
+										JOptionPane.showMessageDialog(null, "Something went wrong, please try again later.");
+									}
 								}
 							} catch (Exception e) {
 								JOptionPane.showMessageDialog(null, "Exception: Something went wrong, please try again later.");

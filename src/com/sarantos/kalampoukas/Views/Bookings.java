@@ -16,7 +16,6 @@ import com.sarantos.kalampoukas.HotelApp;
 import com.sarantos.kalampoukas.Controllers.UserController;
 import com.sarantos.kalampoukas.Models.Booking;
 import com.sarantos.kalampoukas.Models.JTableBooking;
-import com.sarantos.kalampoukas.Models.JTableRoom;
 import com.sarantos.kalampoukas.util.JTableButtonMouseListener;
 import com.sarantos.kalampoukas.util.JTableCellRenderer;
 
@@ -32,6 +31,7 @@ public class Bookings extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Bookings - Hotel App");
 		setFont(new Font("Tahoma", Font.PLAIN, 16));
+		setResizable(false);
 		getContentPane().setLayout(null);
 		
 		// Table
@@ -41,6 +41,8 @@ public class Bookings extends JFrame {
 		table.setDefaultRenderer(Object.class, cellRenderer);
 			
         table.addMouseListener(new JTableButtonMouseListener(table));
+        table.getTableHeader().setReorderingAllowed(false);
+		table.getTableHeader().setResizingAllowed(false);
         JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBounds(new Rectangle(0, 50, 885, 430));
 		scrollPane.setViewportView(table);

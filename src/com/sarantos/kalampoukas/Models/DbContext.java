@@ -25,6 +25,21 @@ public class DbContext {
 		Class.forName(JDBC_DRIVER);
 	}
 	
+	public void registerCustomer(User user) throws SQLException {
+		connect();
+		String sql = "INSERT INTO users (email, name, surname, mobile, password_hash, role_id) VALUES (?, ?, ?, ?, ?, ?)";
+		stmt = conn.prepareStatement(sql);
+		stmt.setString(1, user.getEmail());
+		stmt.setString(2, user.getName());
+		stmt.setString(3, user.getSurname());
+		stmt.setString(4, user.getMobile());
+		stmt.setString(5, user.getPasswordHash());
+		stmt.setInt(6, 2);
+		stmt.executeUpdate();
+			
+		dispose();	
+	}
+	
 	public User findUserByEmailAndRole(String email, String role) throws SQLException {
 		connect();
 		String sql = "SELECT * FROM users JOIN roles ON users.role_id=roles.id WHERE users.email=? AND roles.name=?";
@@ -50,6 +65,36 @@ public class DbContext {
 		String sql = "SELECT bookings.*, users.email AS email FROM bookings JOIN users ON bookings.user_id=users.id ORDER BY bookings.check_in DESC";
 		
 		stmt = conn.prepareStatement(sql);
+		
+		ResultSet result = stmt.executeQuery();
+		
+		while (result.next()) {
+			int id = result.getInt("id");
+			int user_id = result.getInt("user_id");
+			int persons = result.getInt("persons");
+			double total_price = result.getDouble("total_price");
+			Date check_in = result.getDate("check_in");
+			Date check_out = result.getDate("check_out");
+			int status_id = result.getInt("status_id");
+			int room_id = result.getInt("room_id");
+			String email = result.getString("email");
+			Booking booking = new Booking(id, user_id, persons, total_price, check_in, check_out, status_id, room_id, email);
+			bookings.add(booking);
+		} 
+		dispose();		
+		return bookings;
+	}
+	
+	public List<Booking> getBookings(int userId) throws SQLException {
+		connect();
+		
+		List<Booking> bookings = new ArrayList<Booking>();
+		
+		String sql = "SELECT bookings.*, users.email AS email FROM bookings JOIN users ON bookings.user_id=users.id WHERE "
+				+ "users.id=? ORDER BY bookings.check_in DESC";
+		
+		stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, userId);
 		
 		ResultSet result = stmt.executeQuery();
 		

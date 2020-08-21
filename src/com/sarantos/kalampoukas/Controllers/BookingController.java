@@ -22,6 +22,19 @@ public BookingController() {}
 		}
 	}
 	
+	public List<Booking> getBookings(int userId) throws Exception {
+		DbContext context;
+		try {
+			context = new DbContext();
+			List<Booking> bookings = context.getBookings(userId);
+			return bookings;
+		} catch (ClassNotFoundException | SQLException e) {
+			System.out.println(e.toString());
+			e.printStackTrace();
+			throw new Exception();
+		}
+	}
+	
 	public boolean cancelBooking(int id) throws Exception {
 		DbContext context;
 		try {

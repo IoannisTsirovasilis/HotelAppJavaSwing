@@ -7,7 +7,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,6 +25,7 @@ import com.sarantos.kalampoukas.Controllers.UserController;
 import com.sarantos.kalampoukas.Models.Booking;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 
 public class Payment extends JFrame {
 	Dimension dim;
@@ -35,6 +39,7 @@ public class Payment extends JFrame {
 		
 		setTitle("Payment - Hotel App");
 		setFont(new Font("Tahoma", Font.PLAIN, 16));
+		setResizable(false);
 		getContentPane().setLayout(null);
 		
 		PaymentController pc = new PaymentController();
@@ -92,6 +97,45 @@ public class Payment extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) throws NumberFormatException {
 				try {
+					String cardNumber = frmCardNumberField.getText();
+					String holderName = frmCardHolderNameField.getText();
+					String cvv = frmCVVField.getText();
+					
+					if (cardNumber == null || cardNumber.trim().equals("")) {
+						JOptionPane.showMessageDialog(null, "Card Number field is required.");
+						return;
+					}
+					
+					if (holderName == null || holderName.trim().equals("")) {
+						JOptionPane.showMessageDialog(null, "Holder Name field is required.");
+						return;
+					}
+					
+					if (cvv == null || cvv.trim().equals("")) {
+						JOptionPane.showMessageDialog(null, "CVV field is required.");
+						return;
+					}
+					
+					String cardNumberRegex = "^(\\d){16}$";
+					 
+					Pattern pattern = Pattern.compile(cardNumberRegex);
+					Matcher matcher = pattern.matcher(cardNumber.trim().replaceAll("\\s+", ""));
+					
+					if (!matcher.matches()) {
+						JOptionPane.showMessageDialog(null, "Card Number field is not valid.");
+						return;
+					}
+					
+					String cvvRegex = "^(\\d){3}$";
+					 
+					pattern = Pattern.compile(cvvRegex);
+					matcher = pattern.matcher(cvv.trim().replaceAll("\\s+", ""));
+					
+					if (!matcher.matches()) {
+						JOptionPane.showMessageDialog(null, "CVV field is not valid.");
+						return;
+					}
+					
 					pc.payBooking(bookingId);
 					JOptionPane.showMessageDialog(null, "Successful payment!");
 					HotelApp.window.dispose();
@@ -118,7 +162,7 @@ public class Payment extends JFrame {
 			}
 		});
 		payBtn.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		payBtn.setBounds(366, 309, 227, 24);
+		payBtn.setBounds(366, 347, 227, 24);
 		getContentPane().add(payBtn);
 		
 		// Cancel Button
@@ -140,8 +184,19 @@ public class Payment extends JFrame {
 			}
 		});
 		cancelBtn.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cancelBtn.setBounds(366, 346, 227, 24);
+		cancelBtn.setBounds(366, 384, 227, 24);
 		getContentPane().add(cancelBtn);
+		
+		JComboBox<Integer> monthDropDown = new JComboBox<Integer>();
+		for (int month = 1; month <= 12; month++) monthDropDown.addItem(month);
+		monthDropDown.setBounds(366, 304, 60, 22);
+		getContentPane().add(monthDropDown);
+		
+		JComboBox<Integer> yearDropDown = new JComboBox<Integer>();
+		for (int year = Calendar.getInstance().get(Calendar.YEAR); year <= Calendar.getInstance().get(Calendar.YEAR) + 5; year++)
+			yearDropDown.addItem(year);
+		yearDropDown.setBounds(463, 304, 100, 22);
+		getContentPane().add(yearDropDown);
 		
 		setVisible(true);
 	}

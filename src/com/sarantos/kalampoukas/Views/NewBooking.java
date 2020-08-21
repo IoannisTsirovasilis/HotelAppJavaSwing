@@ -2,12 +2,11 @@ package com.sarantos.kalampoukas.Views;
 
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -17,9 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JTable;
 
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
@@ -31,12 +28,8 @@ import com.sarantos.kalampoukas.UserSession;
 import com.sarantos.kalampoukas.Controllers.BookingController;
 import com.sarantos.kalampoukas.Controllers.RoomController;
 import com.sarantos.kalampoukas.Controllers.UserController;
-import com.sarantos.kalampoukas.Models.Booking;
-import com.sarantos.kalampoukas.Models.JTableBooking;
 import com.sarantos.kalampoukas.Models.Room;
 import com.sarantos.kalampoukas.Models.User;
-import com.sarantos.kalampoukas.util.JTableButtonMouseListener;
-import com.sarantos.kalampoukas.util.JTableCellRenderer;
 import javax.swing.JTextField;
 
 public class NewBooking extends JFrame implements KeyListener {
@@ -48,6 +41,9 @@ public class NewBooking extends JFrame implements KeyListener {
 	private JButton backBtn;
 	private JTextField emailField;
 	private JLabel lblEmailLabel;
+	private JButton registerBtn;
+	private JLabel checkInLbl;
+	private JLabel checkOutLbl;
 	
 	public NewBooking(Dimension dim) {
 		this.dim = dim;
@@ -59,6 +55,7 @@ public class NewBooking extends JFrame implements KeyListener {
 		setVisible(true);
 		setTitle("Search Room - Hotel App");
 		setFont(new Font("Tahoma", Font.PLAIN, 16));
+		setResizable(false);
 		getContentPane().setLayout(null);
 		
 		JLabel frmFromLabel = new JLabel("From");
@@ -202,6 +199,52 @@ public class NewBooking extends JFrame implements KeyListener {
 		lblEmailLabel.setBounds(260, 136, 75, 16);
 		getContentPane().add(lblEmailLabel);
 		
+		registerBtn = new JButton("New User");
+		registerBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				HotelApp.window.dispose();
+				HotelApp.window = new Register(dim);
+			}
+		});
+		registerBtn.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		registerBtn.setBounds(14, 28, 105, 24);
+		getContentPane().add(registerBtn);
+		
+		checkInLbl = new JLabel("");
+		checkInLbl.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		checkInLbl.setBounds(610, 169, 199, 25);
+		getContentPane().add(checkInLbl);
+		
+		checkOutLbl = new JLabel("");
+		checkOutLbl.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		checkOutLbl.setBounds(610, 214, 199, 25);
+		getContentPane().add(checkOutLbl);
+		
+		updateDateLabels();
+		
+		getContentPane().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				updateDateLabels();
+			}
+		});
+		
+	}
+	
+	private void updateDateLabels() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		
+		Date to = (Date) datePickerTo.getModel().getValue();
+		to.setHours(12);
+		to.setMinutes(0);
+		to.setDate(to.getDate() + 1);		
+		checkOutLbl.setText(format.format(to));
+		
+		Date from = (Date) datePickerFrom.getModel().getValue();		
+		from.setHours(12);
+		from.setMinutes(0);
+		checkInLbl.setText(format.format(from));
 	}
 	
 	private int getUserIdByEmail(String email) {

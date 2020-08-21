@@ -50,6 +50,7 @@ public class Rooms extends JFrame {
 		setLocationRelativeTo(null);
 		setTitle("Available Rooms - Hotel App");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setResizable(false);
 		getContentPane().setLayout(null);
 
 		// Date Label
@@ -70,6 +71,8 @@ public class Rooms extends JFrame {
 		table.setDefaultRenderer(Object.class, cellRenderer);
 
 		table.addMouseListener(new JTableButtonMouseListener(table));
+		table.getTableHeader().setReorderingAllowed(false);
+		table.getTableHeader().setResizingAllowed(false);
 		scrollPane = new JScrollPane(table);
 		scrollPane.setBounds(new Rectangle(0, 50, 885, 430));
 		scrollPane.getViewport().add(table);

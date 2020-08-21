@@ -36,6 +36,7 @@ public class Admin extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Admin - Hotel App");
 		setFont(new Font("Tahoma", Font.PLAIN, 16));
+		setResizable(false);
 		getContentPane().setLayout(null);
 		
 		JButton btnBookings = new JButton("Bookings");

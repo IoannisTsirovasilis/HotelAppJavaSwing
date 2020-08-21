@@ -47,6 +47,7 @@ public class Login extends JFrame implements KeyListener {
 		getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 16));
 		setTitle("Login - Hotel App");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setResizable(false);
 		getContentPane().setLayout(null);
 
 		frmLoginEmailField = new JTextField();
@@ -66,6 +67,7 @@ public class Login extends JFrame implements KeyListener {
 		getContentPane().add(frmLoginPasswordLabel);
 
 		loginBtn = new JButton("Login");
+		loginBtn.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		loginBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -76,6 +78,7 @@ public class Login extends JFrame implements KeyListener {
 		getContentPane().add(loginBtn);
 
 		JButton exitBtn = new JButton("Exit");
+		exitBtn.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		exitBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -99,6 +102,18 @@ public class Login extends JFrame implements KeyListener {
 		lblRole.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblRole.setBounds(255, 317, 83, 16);
 		getContentPane().add(lblRole);
+		
+		JButton registerBtn = new JButton("Register");
+		registerBtn.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		registerBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				HotelApp.window.dispose();
+				HotelApp.window = new Register(dim);
+			}
+		});
+		registerBtn.setBounds(350, 391, 227, 24);
+		getContentPane().add(registerBtn);
 		
 		frmLoginEmailField.addKeyListener(this);
 		frmLoginPasswordField.addKeyListener(this);

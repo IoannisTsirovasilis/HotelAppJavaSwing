@@ -16,11 +16,28 @@ public class UserController {
 		DbContext context;
 		try {
 			context = new DbContext();
-			User user = context.findUserByEmailAndRole("ioannistsirovasilis@gmail.com", role);
+			User user = context.findUserByEmailAndRole(email, role);
 			
 			if (user == null) return user;
 			
 			return user.getPasswordHash().equals(password) ? user : null;
+		} catch (ClassNotFoundException | SQLException e) {
+			System.out.println(e.toString());
+			e.printStackTrace();
+			throw new Exception();
+		}		
+	}
+	
+	public void register(User newUser, String role) throws Exception, IllegalArgumentException {
+		DbContext context;
+		try {
+			context = new DbContext();
+			System.out.println(newUser.getEmail());
+			User user = context.findUserByEmailAndRole(newUser.getEmail(), role);
+			if (user != null) {
+				throw new IllegalArgumentException();
+			}
+			context.registerCustomer(newUser);
 		} catch (ClassNotFoundException | SQLException e) {
 			System.out.println(e.toString());
 			e.printStackTrace();
