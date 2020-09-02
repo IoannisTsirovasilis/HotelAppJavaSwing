@@ -32,7 +32,7 @@ import com.sarantos.kalampoukas.Models.Room;
 import com.sarantos.kalampoukas.Models.User;
 import javax.swing.JTextField;
 
-public class NewBooking extends JFrame implements KeyListener {
+public class NewBooking extends Base implements KeyListener {
 	JButton searchRoomBtn;
 	JDatePickerImpl datePickerFrom;
 	JDatePickerImpl datePickerTo;
@@ -145,8 +145,8 @@ public class NewBooking extends JFrame implements KeyListener {
 		searchRoomBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) throws NumberFormatException {
-				int user_id = getUserIdByEmail(emailField.getText());
-				UserSession.getInstance().setUserId(user_id);
+				int bookingUserId = getUserIdByEmail(emailField.getText());
+				UserSession.getInstance().setBookingUserId(bookingUserId);
 				searchRooms(dim);
 			}
 		});

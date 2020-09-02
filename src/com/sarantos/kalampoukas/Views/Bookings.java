@@ -19,7 +19,7 @@ import com.sarantos.kalampoukas.Models.JTableBooking;
 import com.sarantos.kalampoukas.util.JTableButtonMouseListener;
 import com.sarantos.kalampoukas.util.JTableCellRenderer;
 
-public class Bookings extends JFrame {
+public class Bookings extends Base {
 	Dimension dim;
 	
 	public Bookings(Dimension dim, List<Booking> bookings) {
@@ -84,6 +84,14 @@ public class Bookings extends JFrame {
 		btnNewBooking.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnNewBooking.setBounds(14, 13, 147, 24);
 		getContentPane().add(btnNewBooking);
+		
+		btnHelp.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnHelp.setBounds(328, 506, 105, 24);
+		getContentPane().add(btnHelp);
+		
+		btnAboutUs.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnAboutUs.setBounds(445, 507, 105, 24);
+		getContentPane().add(btnAboutUs);
 		
 		setVisible(true);
 	}

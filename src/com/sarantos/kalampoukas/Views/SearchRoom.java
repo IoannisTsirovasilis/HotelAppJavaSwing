@@ -40,7 +40,7 @@ import javax.swing.JSpinner;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
-public class SearchRoom extends JFrame implements KeyListener {
+public class SearchRoom extends Base implements KeyListener {
 	JButton searchRoomBtn;
 	JDatePickerImpl datePickerFrom;
 	JDatePickerImpl datePickerTo;

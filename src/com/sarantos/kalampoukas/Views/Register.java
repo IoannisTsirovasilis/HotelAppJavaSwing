@@ -21,7 +21,7 @@ import com.sarantos.kalampoukas.Controllers.UserController;
 import com.sarantos.kalampoukas.Models.User;
 import javax.swing.JPasswordField;
 
-public class Register extends JFrame implements KeyListener {
+public class Register extends Base implements KeyListener {
 	Dimension dim;
 	private JTextField emailField;
 	private JTextField nameField;
@@ -114,8 +114,14 @@ public class Register extends JFrame implements KeyListener {
 		backBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				HotelApp.window.dispose();
-				HotelApp.window = new Login(dim);
+				if (UserSession.getInstance() != null && UserSession.getInstance().getRoleId() == 1) {
+					HotelApp.window.dispose();
+					HotelApp.window = new NewBooking(dim);
+				} else {
+					HotelApp.window.dispose();
+					HotelApp.window = new Login(dim);
+				}
+				
 			}
 		});
 		backBtn.setFont(new Font("Tahoma", Font.PLAIN, 16));

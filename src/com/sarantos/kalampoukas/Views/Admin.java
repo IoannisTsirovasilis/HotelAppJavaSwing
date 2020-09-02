@@ -24,7 +24,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public class Admin extends JFrame {
+public class Admin extends Base {
 	Dimension dim;
 	
 	public Admin(Dimension dim) {
@@ -95,6 +95,14 @@ public class Admin extends JFrame {
 		logOffBtn.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		logOffBtn.setBounds(767, 506, 105, 24);
 		getContentPane().add(logOffBtn);
+		
+		btnHelp.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnHelp.setBounds(328, 506, 105, 24);
+		getContentPane().add(btnHelp);
+		
+		btnAboutUs.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnAboutUs.setBounds(445, 507, 105, 24);
+		getContentPane().add(btnAboutUs);
 		
 		setVisible(true);
 	}

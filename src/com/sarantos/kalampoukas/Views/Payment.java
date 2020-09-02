@@ -23,11 +23,13 @@ import com.sarantos.kalampoukas.Controllers.BookingController;
 import com.sarantos.kalampoukas.Controllers.PaymentController;
 import com.sarantos.kalampoukas.Controllers.UserController;
 import com.sarantos.kalampoukas.Models.Booking;
+import com.sarantos.kalampoukas.util.EmailSender;
 
+import javax.mail.MessagingException;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
-public class Payment extends JFrame {
+public class Payment extends Base {
 	Dimension dim;
 	
 	public Payment(Dimension dim, long bookingId) {
@@ -136,25 +138,26 @@ public class Payment extends JFrame {
 						return;
 					}
 					
-					pc.payBooking(bookingId);
-					JOptionPane.showMessageDialog(null, "Successful payment!");
-					HotelApp.window.dispose();
-					if (UserSession.getInstance().getRoleId() == 1) {
-						
-						try {
-							BookingController bc = new BookingController();
-							List<Booking> bookings;
-							bookings = bc.getBookings();
-							HotelApp.window = new Bookings(dim, bookings); 
-						} catch (Exception e1) {
-							JOptionPane.showMessageDialog(null, "Payment was successful, but something went wrong afterwards. Please relogin");
-							UserController.logOff();
-							HotelApp.window = new Login(dim); 
-						}						
-					}
-					else {
-						HotelApp.window = new SearchRoom(dim);
-					}						
+					if (pc.payBooking(bookingId)) {
+						JOptionPane.showMessageDialog(null, "Successful payment!");
+						HotelApp.window.dispose();
+						if (UserSession.getInstance().getRoleId() == 1) {
+							
+							try {
+								BookingController bc = new BookingController();
+								List<Booking> bookings;
+								bookings = bc.getBookings();
+								HotelApp.window = new Bookings(dim, bookings); 
+							} catch (Exception e1) {
+								JOptionPane.showMessageDialog(null, "Payment was successful, but something went wrong afterwards. Please relogin");
+								UserController.logOff();
+								HotelApp.window = new Login(dim); 
+							}						
+						}
+						else {
+							HotelApp.window = new SearchRoom(dim);
+						}
+					};											
 				} catch (ClassNotFoundException | SQLException e1) {
 					JOptionPane.showMessageDialog(null, "Something went wrong, please try again.");
 					e1.printStackTrace();

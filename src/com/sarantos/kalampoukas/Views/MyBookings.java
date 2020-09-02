@@ -19,7 +19,7 @@ import com.sarantos.kalampoukas.Models.JTableBooking;
 import com.sarantos.kalampoukas.util.JTableButtonMouseListener;
 import com.sarantos.kalampoukas.util.JTableCellRenderer;
 
-public class MyBookings extends JFrame {
+public class MyBookings extends Base {
 	Dimension dim;
 	
 	public MyBookings(Dimension dim, List<Booking> bookings) {

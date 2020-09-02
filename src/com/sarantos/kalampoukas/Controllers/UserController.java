@@ -28,7 +28,7 @@ public class UserController {
 		}		
 	}
 	
-	public void register(User newUser, String role) throws Exception, IllegalArgumentException {
+	public void register(User newUser, String role) throws ClassNotFoundException, SQLException  {
 		DbContext context;
 		try {
 			context = new DbContext();
@@ -41,11 +41,26 @@ public class UserController {
 		} catch (ClassNotFoundException | SQLException e) {
 			System.out.println(e.toString());
 			e.printStackTrace();
-			throw new Exception();
+			throw e;
 		}		
 	}
 	
-	public User getCustomerByEmail(String email) throws Exception {
+	public User getUserById(int id) throws ClassNotFoundException, SQLException {
+		DbContext context;
+		try {
+			context = new DbContext();
+			User user = context.findUserById(id);			
+			return user;
+			
+		} catch (ClassNotFoundException | SQLException e) {
+			System.out.println(e.toString());
+			e.printStackTrace();
+			throw e;
+		}	
+	}
+	
+	
+	public User getCustomerByEmail(String email) throws ClassNotFoundException, SQLException {
 		DbContext context;
 		try {
 			context = new DbContext();
@@ -55,11 +70,11 @@ public class UserController {
 		} catch (ClassNotFoundException | SQLException e) {
 			System.out.println(e.toString());
 			e.printStackTrace();
-			throw new Exception();
+			throw e;
 		}	
 	}
 	
-	public static List<Role> getRoles() throws Exception {
+	public static List<Role> getRoles() throws ClassNotFoundException, SQLException {
 		DbContext context;
 		try {
 			context = new DbContext();
@@ -67,7 +82,7 @@ public class UserController {
 		} catch (ClassNotFoundException | SQLException e) {
 			System.out.println(e.toString());
 			e.printStackTrace();
-			throw new Exception();
+			throw e;
 		}	
 	}
 	

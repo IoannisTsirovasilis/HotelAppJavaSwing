@@ -19,6 +19,7 @@ public final class UserSession {
     private Date check_out;
     private int persons;
     private double total_price;
+    private int bookingUserId;
 
     private UserSession(int user_id, String email, String name, String surname, int role_id) {
         this.user_id = user_id;
@@ -41,6 +42,10 @@ public final class UserSession {
     
     public void cleanUserSession() {
     	instance = null;
+    }
+    
+    public int getBookingUserId() {
+    	return bookingUserId;
     }
     
     public long getBookingId() {
@@ -83,8 +88,8 @@ public final class UserSession {
     	return total_price;
     }
     
-    public void setUserId(int user_id) {
-        this.user_id = user_id;
+    public void setBookingUserId(int bookingUserId) {
+        this.bookingUserId = bookingUserId;
     }
     
     public void setBookingInfo(Date check_in, Date check_out, int persons, double total_price) {

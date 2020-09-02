@@ -22,7 +22,7 @@ import com.sarantos.kalampoukas.Models.Role;
 import com.sarantos.kalampoukas.Models.User;
 import javax.swing.JComboBox;
 
-public class Login extends JFrame implements KeyListener {
+public class Login extends Base implements KeyListener {
 	private JTextField frmLoginEmailField;
 	private JLabel frmLoginPasswordLabel;
 	private JPasswordField frmLoginPasswordField;

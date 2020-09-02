@@ -24,7 +24,7 @@ import com.sarantos.kalampoukas.Models.Room;
 import com.sarantos.kalampoukas.util.JTableButtonMouseListener;
 import com.sarantos.kalampoukas.util.JTableCellRenderer;
 
-public class AdminRooms extends JFrame {
+public class AdminRooms extends Base {
 	private JTable table;
     private JScrollPane scrollPane;
     
@@ -80,6 +80,14 @@ public class AdminRooms extends JFrame {
 		logOffBtn.setBounds(767, 506, 105, 24);
 		logOffBtn.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		getContentPane().add(logOffBtn);		
+		
+		btnHelp.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnHelp.setBounds(328, 506, 105, 24);
+		getContentPane().add(btnHelp);
+		
+		btnAboutUs.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnAboutUs.setBounds(445, 507, 105, 24);
+		getContentPane().add(btnAboutUs);
 		
 		// Render
 		setVisible(true);

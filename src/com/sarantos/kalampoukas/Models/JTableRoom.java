@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
+import javax.mail.MessagingException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -28,9 +29,11 @@ import com.sarantos.kalampoukas.HotelApp;
 import com.sarantos.kalampoukas.UserSession;
 import com.sarantos.kalampoukas.Controllers.BookingController;
 import com.sarantos.kalampoukas.Controllers.RoomController;
+import com.sarantos.kalampoukas.Controllers.UserController;
 import com.sarantos.kalampoukas.Views.Bookings;
 import com.sarantos.kalampoukas.Views.Payment;
 import com.sarantos.kalampoukas.Views.SearchRoom;
+import com.sarantos.kalampoukas.util.EmailSender;
 	
 public class JTableRoom extends AbstractTableModel {
 	   private Object[][] rows;
@@ -80,6 +83,15 @@ public class JTableRoom extends AbstractTableModel {
 										
 										if (bookingId > 0) {				
 											JOptionPane.showMessageDialog(null, "Successful booking!");
+											UserController uc = new UserController();
+											User user = uc.getUserById(UserSession.getInstance().getBookingUserId());
+											try {
+												EmailSender emailSender = new EmailSender();
+												emailSender.sendEmail(user.getEmail());
+											} catch (MessagingException ex) {
+												
+											}
+											
 											BookingController bc = new BookingController();
 											HotelApp.window.dispose();
 											HotelApp.window = new Bookings(dim, bc.getBookings());

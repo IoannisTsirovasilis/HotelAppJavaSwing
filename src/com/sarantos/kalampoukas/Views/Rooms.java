@@ -38,7 +38,7 @@ import javax.swing.JTable;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
-public class Rooms extends JFrame {
+public class Rooms extends Base {
 	private JTable table;
 	private JScrollPane scrollPane;
 

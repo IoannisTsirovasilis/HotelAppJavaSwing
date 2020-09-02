@@ -57,6 +57,22 @@ public class DbContext {
 		return null;
 	}
 	
+	public User findUserById(int id) throws SQLException {
+		connect();
+		String sql = "SELECT * FROM users WHERE id=?";
+		stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, id);
+		ResultSet result = stmt.executeQuery();
+			
+		if (result.next()) {
+			return new User(result.getInt("id"), result.getString("name"),
+					result.getString("surname"), result.getString("email"), result.getString("mobile"),
+					result.getInt("role_id"), result.getString("password_hash"));
+		}
+		dispose();	
+		return null;
+	}
+	
 	public List<Booking> getBookings() throws SQLException {
 		connect();
 		
